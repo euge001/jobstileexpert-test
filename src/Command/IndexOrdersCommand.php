@@ -24,22 +24,27 @@ final class IndexOrdersCommand extends Command
         $host = getenv('MANTICORE_HOST') ?: 'manticore';
         $port = getenv('MANTICORE_PORT') ?: '9308';
 
-        $client->request('POST', sprintf('http://%s:%s/cli', $host, $port), [
-            'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-            'body' => 'mode=raw&query=' . urlencode('CREATE TABLE IF NOT EXISTS orders (id BIGINT, created_at STRING, amount FLOAT)'),
-        ]);
-
-        foreach ($rows as $row) {
             $client->request('POST', sprintf('http://%s:%s/cli', $host, $port), [
                 'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
-                'body' => 'mode=raw&query=' . urlencode(sprintf(
-                    "REPLACE INTO orders (id, created_at, amount) VALUES (%d, '%s', %f)",
-                    (int) $row['id'],
-                    $row['created_at'],
-                    (float) $row['amount']
-                )),
+                'body' => 'mode=raw&query=' . urlencode('CREATE TABLE IF NOT EXISTS orders (id BIGINT PRIMARY KEY, search_text TEXT) rt'),
             ]);
-        }
+
+            $client->request('POST', sprintf('http://%s:%s/cli', $host, $port), [
+                'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                'body' => 'mode=raw&query=' . urlencode('TRUNCATE TABLE orders'),
+            ]);
+
+            foreach ($rows as $row) {
+                $searchText = sprintf('%d %s %s', (int) $row['id'], $row['created_at'], $row['amount']);
+                $client->request('POST', sprintf('http://%s:%s/cli', $host, $port), [
+                    'headers' => ['Content-Type' => 'application/x-www-form-urlencoded'],
+                    'body' => 'mode=raw&query=' . urlencode(sprintf(
+                        "INSERT INTO orders (id, search_text) VALUES (%d, '%s')",
+                        (int) $row['id'],
+                        addslashes($searchText)
+                    )),
+                ]);
+            }
 
         $output->writeln('Indexed orders into Manticore');
         return Command::SUCCESS;

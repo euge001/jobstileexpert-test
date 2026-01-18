@@ -36,7 +36,7 @@ final class SoapController extends AbstractController
 
         $order = new Order();
         $order->setAmount($amount);
-        $order->setCreatedAt($createdAt !== '' ? new \DateTimeImmutable($createdAt) : new \DateTimeImmutable());
+        $order->setCreatedAt($createdAt !== '' ? new \DateTime($createdAt) : new \DateTime());
 
         $em->persist($order);
         $em->flush();

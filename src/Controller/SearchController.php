@@ -19,10 +19,14 @@ final class SearchController extends AbstractController
         }
 
         $client = HttpClient::create(['timeout' => 5]);
-        $response = $client->request('GET', sprintf('http://%s:%s/search', getenv('MANTICORE_HOST') ?: 'manticore', getenv('MANTICORE_PORT') ?: '9308'), [
-            'query' => [
+        $response = $client->request('POST', sprintf('http://%s:%s/search', getenv('MANTICORE_HOST') ?: 'manticore', getenv('MANTICORE_PORT') ?: '9308'), [
+            'json' => [
                 'index' => 'orders',
-                'query' => $q,
+                'query' => [
+                    'match' => [
+                        '*' => $q,
+                    ],
+                ],
             ],
         ]);
 
