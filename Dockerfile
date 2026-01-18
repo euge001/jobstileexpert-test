@@ -13,7 +13,7 @@ RUN apt-get update \
         zlib1g-dev \
         libicu-dev \
         g++ \
-    && docker-php-ext-install pdo pdo_pgsql intl zip xml
+    && docker-php-ext-install pdo pdo_pgsql pdo_mysql intl zip xml
 
 # Install Composer
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer

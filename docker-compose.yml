@@ -9,8 +9,7 @@ services:
       - "${APP_PORT:-8081}:8081"
     depends_on:
       - manticore
-    # volumes:
-    #   - ./:/var/www/html
+      - mysql
     working_dir: /var/www/html
   manticore:
     image: manticoresearch/manticore:latest
@@ -20,5 +19,22 @@ services:
       - "9308:9308"
     volumes:
       - manticore_data:/var/lib/manticore
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-S2nkt_pet}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-jobstileexpert-test}
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
 volumes:
   manticore_data:
+  mysql_data:
+networks:
+  default:
+    driver: bridge
+    driver_opts:
+      com.docker.network.enable_ipv6: "false"
+      com.docker.network.enable_ipv4: "true"
