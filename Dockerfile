@@ -1,4 +1,4 @@
-FROM php:8.2-fpm
+FROM php:8.3-fpm
 
 # Install system dependencies
 RUN apt-get update \
@@ -31,6 +31,6 @@ RUN curl -sS https://get.symfony.com/cli/installer | bash \
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
 # Expose port for Symfony server
-EXPOSE 8080
+EXPOSE 8081
 
-CMD ["php-fpm"]
+CMD ["php", "-S", "0.0.0.0:8081", "-t", "public"]
