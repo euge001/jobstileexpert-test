@@ -24,6 +24,14 @@ final class PriceFetcher
         }
 
         $html = $response->getContent();
+
+        if (preg_match('/"priceUSE"\s*:\s*([0-9]+(?:\.[0-9]+)?)/i', $html, $m)) {
+            return (float) $m[1];
+        }
+        if (preg_match('/"priceFqUSE"\s*:\s*([0-9]+(?:\.[0-9]+)?)/i', $html, $m)) {
+            return (float) $m[1];
+        }
+
         $crawler = new Crawler($html);
 
         $text = '';
