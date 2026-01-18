@@ -33,4 +33,4 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 # Expose port for Symfony server
 EXPOSE 8081
 
-CMD ["php", "-S", "0.0.0.0:8081", "-t", "public"]
+CMD ["sh", "-c", "if [ ! -d public ]; then mkdir -p public && echo '<?php phpinfo();' > public/index.php; fi && php -S 0.0.0.0:8081 -t public"]
