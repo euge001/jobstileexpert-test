@@ -19,3 +19,8 @@ public/uploads/
 php_cs.cache
 php-cs-fixer.cache
 ###< symfony/framework-bundle ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/.phpunit.cache/
+###< phpunit/phpunit ###
